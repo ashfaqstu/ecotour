@@ -265,6 +265,50 @@ export const checkBackendHealth = async (): Promise<boolean> => {
 };
 
 /**
+ * Score breakdown response type
+ */
+export interface ScoreBreakdown {
+  transport_score: { value: number; weight: string; explanation: string };
+  accommodation_score: { value: number; weight: string; explanation: string };
+  activity_score: { value: number; weight: string; explanation: string };
+  local_engagement_score: { value: number; weight: string; explanation: string };
+  overtourism_score: { value: number; weight: string; explanation: string };
+}
+
+export interface ScoreResponse {
+  status: string;
+  itinerary_id: number;
+  title: string;
+  total_score: number;
+  total_carbon_kg: number;
+  breakdown: ScoreBreakdown;
+  explanation: string;
+  recommendations: string[];
+}
+
+/**
+ * Score an itinerary and get detailed breakdown
+ */
+export const scoreItinerary = async (itineraryId: number): Promise<ScoreResponse | null> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/score-itinerary?itinerary_id=${itineraryId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    return await response.json();
+  } catch {
+    return null;
+  }
+};
+
+/**
  * Get itinerary details by ID
  */
 export const getItineraryDetails = async (itineraryId: number): Promise<Itinerary | null> => {
