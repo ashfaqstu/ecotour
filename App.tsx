@@ -64,7 +64,14 @@ const App: React.FC = () => {
                   : <Navigate to="/" />
               } 
             />
-            <Route path="/group-matching" element={<GroupMatchingPage />} />
+            <Route path="/group-matching" element={
+              <GroupMatchingPage 
+                trip={trip} 
+                prefs={prefs} 
+                userId={user?.email || 'guest-user'}
+                userName={user?.name || 'Guest Traveler'}
+              />
+            } />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </Layout>

@@ -1,6 +1,6 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 import { TripDetails, SustainabilityPrefs, Itinerary } from "../types";
+import { generateItinerariesFromBackend, checkBackendHealth } from "./apiService";
 
 const itinerarySchema = {
   type: Type.ARRAY,
@@ -42,11 +42,13 @@ const itinerarySchema = {
   }
 };
 
-export const generateItineraries = async (
+/**
+ * Generate itineraries using Gemini AI directly (fallback method)
+ */
+const generateItinerariesWithGemini = async (
   details: TripDetails,
   prefs: SustainabilityPrefs
 ): Promise<Itinerary[]> => {
-  // Directly initialize GoogleGenAI with the environment variable as per guidelines
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const prompt = `
@@ -66,20 +68,47 @@ export const generateItineraries = async (
     Include daily sustainability highlights explaining the impact choices.
   `;
 
-  try {
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: itinerarySchema,
-      },
-    });
+  const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: prompt,
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: itinerarySchema,
+    },
+  });
 
-    if (!response.text) throw new Error("No response from AI");
-    return JSON.parse(response.text);
-  } catch (error) {
-    console.error("Error generating itineraries:", error);
-    throw error;
+  if (!response.text) throw new Error("No response from AI");
+  return JSON.parse(response.text);
+};
+
+/**
+ * Generate itineraries - tries backend first, falls back to Gemini AI
+ */
+export const generateItineraries = async (
+  details: TripDetails,
+  prefs: SustainabilityPrefs
+): Promise<Itinerary[]> => {
+  // Try backend first
+  try {
+    const isBackendAvailable = await checkBackendHealth();
+    
+    if (isBackendAvailable) {
+      console.log("Using backend API for itinerary generation...");
+      const itineraries = await generateItinerariesFromBackend(details, prefs);
+      if (itineraries && itineraries.length > 0) {
+        return itineraries;
+      }
+    }
+  } catch (backendError) {
+    console.warn("Backend API unavailable, falling back to Gemini:", backendError);
+  }
+
+  // Fall back to Gemini AI
+  try {
+    console.log("Using Gemini AI for itinerary generation...");
+    return await generateItinerariesWithGemini(details, prefs);
+  } catch (geminiError) {
+    console.error("Error generating itineraries with Gemini:", geminiError);
+    throw geminiError;
   }
 };

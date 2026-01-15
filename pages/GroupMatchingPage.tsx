@@ -1,17 +1,92 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Users, MessageCircle, UserPlus, Heart, Sprout } from 'lucide-react';
-import { MatchedTraveler } from '../types';
+import { ChevronLeft, Users, MessageCircle, UserPlus, Heart, Sprout, Loader2 } from 'lucide-react';
+import { MatchedTraveler, TripDetails, SustainabilityPrefs } from '../types';
+import { findGroupMatches, createTravelerProfile, checkBackendHealth } from '../services/apiService';
 
+// Fallback mock data when backend is unavailable
 const MOCK_MATCHES: MatchedTraveler[] = [
   { id: '1', name: 'Daisy_Lover', avatar: 'https://i.pravatar.cc/150?u=sarah', matchPercentage: 94, reason: 'Strong sync on carbon care and slow pace.' },
   { id: '2', name: 'Forest_Friend', avatar: 'https://i.pravatar.cc/150?u=mark', matchPercentage: 88, reason: 'Both support the same village lodges.' },
   { id: '3', name: 'River_Run', avatar: 'https://i.pravatar.cc/150?u=elena', matchPercentage: 82, reason: 'Shared goal to protect riparian biomes.' }
 ];
 
-export const GroupMatchingPage: React.FC = () => {
+interface GroupMatchingPageProps {
+  trip?: TripDetails | null;
+  prefs?: SustainabilityPrefs | null;
+  userId?: string;
+  userName?: string;
+}
+
+export const GroupMatchingPage: React.FC<GroupMatchingPageProps> = ({ 
+  trip, 
+  prefs,
+  userId = 'guest-user',
+  userName = 'Guest Traveler'
+}) => {
   const navigate = useNavigate();
-  const [matches] = useState(MOCK_MATCHES);
+  const [matches, setMatches] = useState<MatchedTraveler[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [usingMockData, setUsingMockData] = useState(false);
+
+  useEffect(() => {
+    const loadMatches = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        // Check if backend is available
+        const isBackendAvailable = await checkBackendHealth();
+        
+        if (isBackendAvailable && trip && prefs) {
+          // Create/update traveler profile first
+          await createTravelerProfile(trip, prefs, userId, userName);
+          
+          // Then find matches
+          const foundMatches = await findGroupMatches(userId, trip.destination);
+          
+          if (foundMatches.length > 0) {
+            setMatches(foundMatches);
+            setUsingMockData(false);
+          } else {
+            // No matches found, use mock data for demo
+            setMatches(MOCK_MATCHES);
+            setUsingMockData(true);
+          }
+        } else {
+          // Backend unavailable, use mock data
+          setMatches(MOCK_MATCHES);
+          setUsingMockData(true);
+        }
+      } catch (err) {
+        console.warn('Error loading matches, using mock data:', err);
+        setMatches(MOCK_MATCHES);
+        setUsingMockData(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadMatches();
+  }, [trip, prefs, userId, userName]);
+
+  if (loading) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center p-12 space-y-12">
+        <div className="relative w-32 h-32">
+          <Loader2 className="w-full h-full text-eco-green/20 animate-spin" strokeWidth={1} />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Users size={48} className="text-eco-green animate-pulse" />
+          </div>
+        </div>
+        <div className="text-center">
+          <h3 className="font-display font-extrabold text-2xl text-gray-900 dark:text-white mb-2">Finding Your Tribe...</h3>
+          <p className="font-sans text-gray-500 dark:text-gray-400 animate-pulse">Searching for like-minded eco-travelers.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto px-8 py-20">
@@ -24,7 +99,14 @@ export const GroupMatchingPage: React.FC = () => {
           <Users className="w-10 h-10" />
         </div>
         <h2 className="text-4xl font-display font-extrabold text-gray-900 dark:text-white mb-4">The Garden Lobby</h2>
-        <p className="text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto font-sans">We found {matches.length} other sprouts who want to care for the world just like you do.</p>
+        <p className="text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto font-sans">
+          We found {matches.length} other sprouts who want to care for the world just like you do.
+        </p>
+        {usingMockData && (
+          <p className="text-sm text-amber-600 dark:text-amber-400 mt-2">
+            (Showing sample matches - connect backend for real matching)
+          </p>
+        )}
       </div>
 
       <div className="space-y-8">
