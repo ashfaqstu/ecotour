@@ -15,23 +15,23 @@ export const GroupMatchingPage: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-8 py-20">
-      <button onClick={() => navigate('/details')} className="flex items-center font-sans font-bold text-gray-400 hover:text-eco-green transition-colors mb-14">
+      <button onClick={() => navigate('/details')} className="flex items-center font-sans font-bold text-gray-400 dark:text-gray-500 hover:text-eco-green transition-colors mb-14">
         <ChevronLeft className="w-5 h-5 mr-1" /> Back to Camp
       </button>
 
       <div className="mb-20 text-center">
-        <div className="inline-flex p-4 bg-eco-green-light rounded-full text-eco-green mb-6 shadow-sm">
+        <div className="inline-flex p-4 bg-eco-green-light dark:bg-eco-green/20 rounded-full text-eco-green mb-6 shadow-sm">
           <Users className="w-10 h-10" />
         </div>
-        <h2 className="text-4xl font-display font-extrabold text-gray-900 mb-4">The Garden Lobby</h2>
-        <p className="text-lg text-gray-500 max-w-xl mx-auto font-sans">We found {matches.length} other sprouts who want to care for the world just like you do.</p>
+        <h2 className="text-4xl font-display font-extrabold text-gray-900 dark:text-white mb-4">The Garden Lobby</h2>
+        <p className="text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto font-sans">We found {matches.length} other sprouts who want to care for the world just like you do.</p>
       </div>
 
       <div className="space-y-8">
         {matches.map((match) => (
           <div key={match.id} className="organic-card p-10 flex flex-col md:flex-row items-center gap-12 group">
             <div className="relative shrink-0">
-              <div className="w-32 h-32 rounded-full overflow-hidden border-8 border-eco-beige shadow-inner">
+              <div className="w-32 h-32 rounded-full overflow-hidden border-8 border-eco-beige dark:border-eco-dark shadow-inner">
                 <img src={match.avatar} alt={match.name} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
               </div>
               <div className="absolute -bottom-2 -right-2 bg-eco-green text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg flex items-center gap-1">
@@ -40,11 +40,11 @@ export const GroupMatchingPage: React.FC = () => {
             </div>
 
             <div className="flex-grow text-center md:text-left space-y-4">
-              <h3 className="text-2xl font-display font-extrabold text-gray-800">{match.name}</h3>
-              <p className="text-gray-500 font-sans leading-relaxed italic">{match.reason}</p>
+              <h3 className="text-2xl font-display font-extrabold text-gray-800 dark:text-white">{match.name}</h3>
+              <p className="text-gray-500 dark:text-gray-400 font-sans leading-relaxed italic">{match.reason}</p>
               <div className="flex flex-wrap justify-center md:justify-start gap-3">
-                <span className="px-4 py-1 bg-eco-green-light text-eco-green text-[10px] font-bold uppercase tracking-widest rounded-full">Nature Pro</span>
-                <span className="px-4 py-1 bg-blue-50 text-blue-500 text-[10px] font-bold uppercase tracking-widest rounded-full">Local Lover</span>
+                <span className="px-4 py-1 bg-eco-green-light dark:bg-eco-green/20 text-eco-green text-[10px] font-bold uppercase tracking-widest rounded-full">Nature Pro</span>
+                <span className="px-4 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-500 dark:text-blue-400 text-[10px] font-bold uppercase tracking-widest rounded-full">Local Lover</span>
               </div>
             </div>
 
@@ -52,7 +52,7 @@ export const GroupMatchingPage: React.FC = () => {
               <button className="bg-eco-green text-white px-8 py-4 rounded-full font-display font-bold shadow-lg shadow-eco-green/20 btn-grow flex items-center justify-center gap-2">
                 <MessageCircle size={18} /> Chat
               </button>
-              <button className="bg-eco-beige text-gray-500 px-8 py-4 rounded-full font-display font-bold hover:text-eco-green transition-colors flex items-center justify-center gap-2">
+              <button className="bg-eco-beige dark:bg-eco-dark/50 text-gray-500 dark:text-gray-400 px-8 py-4 rounded-full font-display font-bold hover:text-eco-green dark:hover:text-eco-green transition-colors flex items-center justify-center gap-2">
                 <UserPlus size={18} /> Invite
               </button>
             </div>

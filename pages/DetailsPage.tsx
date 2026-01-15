@@ -19,7 +19,7 @@ export const DetailsPage: React.FC<{
 
   return (
     <div className="max-w-6xl mx-auto px-8 py-16">
-      <button onClick={() => navigate('/results')} className="flex items-center font-sans font-bold text-gray-400 hover:text-eco-green transition-colors mb-12">
+      <button onClick={() => navigate('/results')} className="flex items-center font-sans font-bold text-gray-400 dark:text-gray-500 hover:text-eco-green transition-colors mb-12">
         <ChevronLeft className="w-5 h-5 mr-1" /> Back to Plans
       </button>
 
@@ -30,32 +30,32 @@ export const DetailsPage: React.FC<{
               <Sprout className="w-6 h-6" />
               <span className="font-display font-bold uppercase text-xs tracking-widest">Kind Journey Selected</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-display font-extrabold text-gray-900 leading-tight">{itinerary.title}</h1>
+            <h1 className="text-4xl md:text-5xl font-display font-extrabold text-gray-900 dark:text-white leading-tight">{itinerary.title}</h1>
             
             <div className="flex flex-wrap gap-4 text-sm">
-              <div className="flex items-center px-6 py-3 bg-white organic-card shadow-sm text-gray-600 font-bold">
+              <div className="flex items-center px-6 py-3 bg-white dark:bg-eco-dark-surface organic-card shadow-sm text-gray-600 dark:text-gray-300 font-bold">
                 <MapPin className="w-4 h-4 mr-2 text-eco-green" /> {trip.destination}
               </div>
-              <div className="flex items-center px-6 py-3 bg-white organic-card shadow-sm text-gray-600 font-bold">
+              <div className="flex items-center px-6 py-3 bg-white dark:bg-eco-dark-surface organic-card shadow-sm text-gray-600 dark:text-gray-300 font-bold">
                 <Calendar className="w-4 h-4 mr-2 text-eco-green" /> {trip.startDate}
               </div>
             </div>
           </div>
 
-          <div className="organic-card p-10 bg-eco-cream relative overflow-hidden">
-            <Sparkles className="absolute top-4 right-4 text-eco-green/10 w-16 h-16" />
-            <h3 className="font-display font-bold text-xl text-gray-800 mb-6 flex items-center gap-2">
+          <div className="organic-card p-10 bg-eco-cream dark:bg-eco-dark/30 relative overflow-hidden">
+            <Sparkles className="absolute top-4 right-4 text-eco-green/10 dark:text-eco-green/5 w-16 h-16" />
+            <h3 className="font-display font-bold text-xl text-gray-800 dark:text-white mb-6 flex items-center gap-2">
                Why this blooms <Sprout size={20} className="text-eco-green" />
             </h3>
-            <p className="text-lg font-sans italic text-gray-600 leading-relaxed">
+            <p className="text-lg font-sans italic text-gray-600 dark:text-gray-300 leading-relaxed">
               "{itinerary.explanation}"
             </p>
           </div>
 
           <div className="space-y-10">
-            <h3 className="font-display font-bold text-2xl text-gray-800">Your Sprout Timeline</h3>
+            <h3 className="font-display font-bold text-2xl text-gray-800 dark:text-white">Your Sprout Timeline</h3>
             <div className="relative space-y-12">
-              <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-eco-green/10 hidden md:block"></div>
+              <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-eco-green/10 dark:bg-eco-green/5 hidden md:block"></div>
               
               {itinerary.days.map((day, idx) => (
                 <div key={idx} className="relative flex flex-col md:flex-row gap-8 items-start">
@@ -63,12 +63,12 @@ export const DetailsPage: React.FC<{
                     {day.day}
                   </div>
                   <div className="organic-card p-8 flex-grow">
-                    <h4 className="font-display font-bold text-xl text-gray-800 mb-4">{day.activity}</h4>
-                    <div className="flex flex-wrap gap-6 text-xs font-bold uppercase text-gray-400 mb-6">
+                    <h4 className="font-display font-bold text-xl text-gray-800 dark:text-white mb-4">{day.activity}</h4>
+                    <div className="flex flex-wrap gap-6 text-xs font-bold uppercase text-gray-400 dark:text-gray-500 mb-6">
                       <span className="flex items-center gap-2"><Train size={14} className="text-eco-green" /> {day.transport}</span>
                       <span className="flex items-center gap-2"><Home size={14} className="text-eco-green" /> {day.accommodation}</span>
                     </div>
-                    <div className="p-5 bg-eco-green-light rounded-soft text-eco-green text-sm font-semibold flex items-start gap-3">
+                    <div className="p-5 bg-eco-green-light dark:bg-eco-green/10 rounded-soft text-eco-green text-sm font-semibold flex items-start gap-3">
                       <Info className="w-5 h-5 shrink-0 mt-0.5" />
                       {day.sustainabilityNote}
                     </div>
@@ -81,22 +81,26 @@ export const DetailsPage: React.FC<{
 
         <div className="space-y-10">
           <div className="sticky top-24 space-y-10">
-            <div className="organic-card p-10 bg-white">
+            <div className="organic-card p-10 bg-white dark:bg-eco-dark-surface">
               <div className="text-center mb-10">
-                <div className="inline-flex flex-col items-center justify-center w-32 h-32 rounded-full bg-eco-green-light mb-6 border-4 border-white shadow-xl">
+                <div className="inline-flex flex-col items-center justify-center w-32 h-32 rounded-full bg-eco-green-light dark:bg-eco-green/20 mb-6 border-4 border-white dark:border-eco-dark shadow-xl">
                   <span className="text-4xl font-display font-black text-eco-green">{itinerary.totalScore}</span>
                   <span className="text-[10px] font-bold text-eco-green uppercase tracking-widest">Kindness</span>
                 </div>
-                <h4 className="font-display font-bold text-gray-800">Impact Balance</h4>
+                <h4 className="font-display font-bold text-gray-800 dark:text-white">Impact Balance</h4>
               </div>
 
               <div className="h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData} margin={{ top: 5, right: 0, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 'bold', fill: '#999' }} />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 'bold', fill: '#999' }} domain={[0, 100]} />
-                    <Tooltip contentStyle={{ borderRadius: '1rem', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }} />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" strokeOpacity={0.1} />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 'bold', fill: '#9ca3af' }} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 'bold', fill: '#9ca3af' }} domain={[0, 100]} />
+                    <Tooltip 
+                      contentStyle={{ borderRadius: '1rem', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.2)', backgroundColor: '#1a2e22', color: 'white' }} 
+                      itemStyle={{ color: 'white' }}
+                      cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                    />
                     <Bar dataKey="score" radius={[10, 10, 10, 10]} barSize={30}>
                       {chartData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />

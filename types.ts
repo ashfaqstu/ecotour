@@ -47,3 +47,9 @@ export interface MatchedTraveler {
   matchPercentage: number;
   reason: string;
 }
+
+export interface User {
+  name: string;
+  email: string;
+  avatar: string;
+}

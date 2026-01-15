@@ -1,15 +1,14 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Leaf, MapPin, Heart, Wind, Flower } from 'lucide-react';
 
 const FeatureItem: React.FC<{ icon: React.ReactNode; title: string; desc: string }> = ({ icon, title, desc }) => (
-  <div className="organic-card p-8 flex flex-col items-center text-center relative z-10 bg-white/80 backdrop-blur-sm">
-    <div className="w-14 h-14 bg-eco-green-light rounded-2xl flex items-center justify-center text-eco-green mb-6">
+  <div className="organic-card p-8 flex flex-col items-center text-center relative z-10 bg-white/90 dark:bg-eco-dark-surface/90 backdrop-blur-sm">
+    <div className="w-14 h-14 bg-eco-green-light dark:bg-eco-green/20 rounded-2xl flex items-center justify-center text-eco-green mb-6">
       {icon}
     </div>
-    <h3 className="font-display font-bold text-lg text-gray-800 mb-2">{title}</h3>
-    <p className="font-sans text-sm text-gray-500 leading-relaxed">{desc}</p>
+    <h3 className="font-display font-bold text-lg text-gray-800 dark:text-white mb-2">{title}</h3>
+    <p className="font-sans text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{desc}</p>
   </div>
 );
 
@@ -26,28 +25,28 @@ export const LandingPage: React.FC = () => {
           <div className="relative w-full h-full overflow-hidden rounded-organic">
             <img 
               src="https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&q=80&w=1200" 
-              className="w-full h-full object-cover opacity-40 grayscale-[20%] mix-blend-multiply transition-opacity duration-700"
+              className="w-full h-full object-cover opacity-40 dark:opacity-30 grayscale-[20%] mix-blend-multiply transition-opacity duration-700"
               alt="Nature adventure background"
             />
             {/* Misty Fades */}
-            <div className="absolute inset-0 bg-gradient-to-b from-eco-beige via-transparent to-eco-beige"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-eco-beige via-transparent to-eco-beige"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-eco-beige via-transparent to-eco-beige dark:from-eco-dark dark:to-eco-dark"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-eco-beige via-transparent to-eco-beige dark:from-eco-dark dark:to-eco-dark"></div>
           </div>
         </div>
 
         {/* Hero Content */}
         <div className="relative z-10 space-y-8 text-center max-w-4xl">
-          <div className="inline-flex items-center space-x-2 px-4 py-1 bg-white/80 backdrop-blur-sm border border-eco-green/10 rounded-full text-eco-green font-bold text-xs uppercase tracking-widest shadow-sm">
+          <div className="inline-flex items-center space-x-2 px-4 py-1 bg-white/80 dark:bg-eco-dark-surface/80 backdrop-blur-sm border border-eco-green/10 dark:border-white/10 rounded-full text-eco-green font-bold text-xs uppercase tracking-widest shadow-sm">
             <Flower size={14} />
             <span>Sprouting Adventures</span>
           </div>
           
-          <h1 className="text-6xl md:text-8xl font-display font-extrabold text-gray-900 leading-[1.05] tracking-tight">
+          <h1 className="text-6xl md:text-8xl font-display font-extrabold text-gray-900 dark:text-white leading-[1.05] tracking-tight">
             Travel with <br/> 
             <span className="text-eco-green font-handwritten text-7xl md:text-9xl lowercase -rotate-2 inline-block drop-shadow-sm">Kindness</span>
           </h1>
           
-          <p className="text-lg md:text-2xl text-gray-700 max-w-2xl mx-auto font-sans leading-relaxed font-medium">
+          <p className="text-lg md:text-2xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto font-sans leading-relaxed font-medium">
             Discover breathtaking destinations and support local communities. Every journey you take can help our planet bloom.
           </p>
           
@@ -58,7 +57,7 @@ export const LandingPage: React.FC = () => {
             >
               Start Planning <ArrowRight size={24} />
             </button>
-            <button className="px-10 py-5 rounded-full font-sans font-bold text-gray-600 hover:text-eco-green transition-colors bg-white/40 backdrop-blur-sm">
+            <button className="px-10 py-5 rounded-full font-sans font-bold text-gray-600 dark:text-gray-300 hover:text-eco-green transition-colors bg-white/40 dark:bg-eco-dark-surface/40 backdrop-blur-sm dark:border dark:border-white/10">
               Our Mission
             </button>
           </div>
@@ -72,7 +71,7 @@ export const LandingPage: React.FC = () => {
             </div>
             <span className="font-display font-bold text-eco-green">1.2k Trees Saved</span>
           </div>
-          <p className="text-[10px] uppercase font-bold text-gray-400 tracking-widest">Global Impact Score</p>
+          <p className="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-widest">Global Impact Score</p>
         </div>
       </div>
 

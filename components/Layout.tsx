@@ -1,30 +1,38 @@
 import React from 'react';
-import { Leaf, Heart, Mail, Moon, Sun, Flower2, Bird, Home, Map } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Leaf, Heart, Mail, Moon, Sun, Flower2, Bird, Home, Map, LogOut, User as UserIcon } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { User } from '../types';
 
 interface LayoutProps {
   children: React.ReactNode;
   darkMode: boolean;
   setDarkMode: (val: boolean) => void;
+  user: User | null;
+  onLogout: () => void;
 }
 
 const FloatingDecor: React.FC = () => (
   <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-    <div className="absolute top-20 -left-10 text-eco-green/10 plant-float">
+    <div className="absolute top-20 -left-10 text-eco-green/10 dark:text-eco-green/5 plant-float">
       <Leaf size={120} />
     </div>
-    <div className="absolute bottom-20 -right-10 text-eco-green/10 plant-float" style={{ animationDelay: '2s' }}>
+    <div className="absolute bottom-20 -right-10 text-eco-green/10 dark:text-eco-green/5 plant-float" style={{ animationDelay: '2s' }}>
       <Flower2 size={100} />
     </div>
-    <div className="absolute top-1/2 right-10 text-eco-green/5 plant-float" style={{ animationDelay: '4s' }}>
+    <div className="absolute top-1/2 right-10 text-eco-green/5 dark:text-eco-green/5 plant-float" style={{ animationDelay: '4s' }}>
       <Bird size={60} />
     </div>
   </div>
 );
 
-const Navbar: React.FC<{ darkMode: boolean; setDarkMode: (val: boolean) => void }> = ({ darkMode, setDarkMode }) => {
+const Navbar: React.FC<{ 
+  darkMode: boolean; 
+  setDarkMode: (val: boolean) => void;
+  user: User | null;
+  onLogout: () => void;
+}> = ({ darkMode, setDarkMode, user, onLogout }) => {
   return (
-    <nav className="h-20 mx-6 mt-4 px-8 flex items-center justify-between rounded-organic bg-white/70 backdrop-blur-md border border-white/20 shadow-sm relative z-50 transition-colors">
+    <nav className="h-20 mx-6 mt-4 px-8 flex items-center justify-between rounded-organic bg-white/70 dark:bg-eco-dark-surface/80 backdrop-blur-md border border-white/20 dark:border-white/5 shadow-sm relative z-50 transition-colors">
       <Link to="/" className="flex items-center space-x-2">
         <div className="bg-eco-green p-2 rounded-full shadow-lg shadow-eco-green/20">
           <Leaf className="w-6 h-6 text-white" />
@@ -33,21 +41,43 @@ const Navbar: React.FC<{ darkMode: boolean; setDarkMode: (val: boolean) => void 
       </Link>
       
       <div className="hidden md:flex items-center space-x-10">
-        <Link to="/" className="font-sans font-semibold text-sm text-gray-600 hover:text-eco-green transition-colors flex items-center gap-1">
+        <Link to="/" className="font-sans font-semibold text-sm text-gray-600 dark:text-gray-300 hover:text-eco-green dark:hover:text-eco-green transition-colors flex items-center gap-1">
           <Home size={16} /> Home
         </Link>
-        <Link to="/trip-form" className="font-sans font-semibold text-sm text-gray-600 hover:text-eco-green transition-colors flex items-center gap-1">
+        <Link to="/trip-form" className="font-sans font-semibold text-sm text-gray-600 dark:text-gray-300 hover:text-eco-green dark:hover:text-eco-green transition-colors flex items-center gap-1">
           <Map size={16} /> Plan
         </Link>
         <button 
           onClick={() => setDarkMode(!darkMode)}
-          className="p-2 rounded-full hover:bg-eco-green-light transition-colors text-gray-500 hover:text-eco-green"
+          className="p-2 rounded-full hover:bg-eco-green-light dark:hover:bg-white/10 transition-colors text-gray-500 dark:text-gray-400 hover:text-eco-green"
+          aria-label="Toggle dark mode"
         >
           {darkMode ? <Sun size={20} /> : <Moon size={20} />}
         </button>
-        <button className="bg-eco-green text-white px-6 py-2 rounded-full font-bold text-sm shadow-lg shadow-eco-green/20 btn-grow">
-          Log In
-        </button>
+        
+        {user ? (
+          <div className="flex items-center gap-4 pl-4 border-l border-gray-200 dark:border-white/10">
+             <div className="flex items-center gap-2">
+               <div className="w-8 h-8 rounded-full bg-eco-beige dark:bg-eco-dark overflow-hidden border border-eco-green/50 p-0.5">
+                  <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full object-cover" />
+               </div>
+               <span className="font-display font-bold text-sm text-gray-700 dark:text-gray-200 hidden lg:block truncate max-w-[100px]">
+                 {user.name}
+               </span>
+             </div>
+             <button 
+               onClick={onLogout}
+               className="p-2 text-gray-400 hover:text-eco-brown dark:hover:text-red-400 transition-colors"
+               aria-label="Log Out"
+             >
+               <LogOut size={18} />
+             </button>
+          </div>
+        ) : (
+          <Link to="/login" className="bg-eco-green text-white px-6 py-2 rounded-full font-bold text-sm shadow-lg shadow-eco-green/20 btn-grow flex items-center gap-2">
+            <UserIcon size={16} /> Log In
+          </Link>
+        )}
       </div>
     </nav>
   );
@@ -55,21 +85,21 @@ const Navbar: React.FC<{ darkMode: boolean; setDarkMode: (val: boolean) => void 
 
 const Footer: React.FC = () => {
   return (
-    <footer className="mt-20 py-12 px-10 border-t border-eco-green/10 bg-eco-beige relative z-10">
+    <footer className="mt-20 py-12 px-10 border-t border-eco-green/10 dark:border-white/5 bg-eco-beige dark:bg-eco-dark/50 relative z-10 transition-colors">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center space-y-8 md:space-y-0">
         <div>
           <div className="flex items-center space-x-2 mb-2">
             <Leaf className="w-5 h-5 text-eco-green" />
             <span className="font-display font-bold text-lg text-eco-green">EcoQuest</span>
           </div>
-          <p className="font-sans text-sm text-gray-500">Helping you bloom where you travel.</p>
+          <p className="font-sans text-sm text-gray-500 dark:text-gray-400">Helping you bloom where you travel.</p>
         </div>
         <div className="flex space-x-8">
-          <a href="#" className="text-gray-400 hover:text-eco-green transition-colors"><Mail size={20} /></a>
-          <a href="#" className="text-gray-400 hover:text-eco-green transition-colors"><Heart size={20} /></a>
-          <a href="#" className="text-gray-400 hover:text-eco-green transition-colors font-bold text-sm uppercase tracking-widest">Privacy</a>
+          <a href="#" className="text-gray-400 dark:text-gray-500 hover:text-eco-green dark:hover:text-eco-green transition-colors"><Mail size={20} /></a>
+          <a href="#" className="text-gray-400 dark:text-gray-500 hover:text-eco-green dark:hover:text-eco-green transition-colors"><Heart size={20} /></a>
+          <a href="#" className="text-gray-400 dark:text-gray-500 hover:text-eco-green dark:hover:text-eco-green transition-colors font-bold text-sm uppercase tracking-widest">Privacy</a>
         </div>
-        <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest">
+        <div className="text-xs font-semibold text-gray-400 dark:text-gray-600 uppercase tracking-widest">
           &copy; 2024 Sprout Travel Co.
         </div>
       </div>
@@ -77,11 +107,11 @@ const Footer: React.FC = () => {
   );
 };
 
-export const Layout: React.FC<LayoutProps> = ({ children, darkMode, setDarkMode }) => {
+export const Layout: React.FC<LayoutProps> = ({ children, darkMode, setDarkMode, user, onLogout }) => {
   return (
-    <div className="app-canvas min-h-screen flex flex-col relative">
+    <div className={`app-canvas min-h-screen flex flex-col relative transition-colors ${darkMode ? 'dark' : ''}`}>
       <FloatingDecor />
-      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
+      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} user={user} onLogout={onLogout} />
       <main className="flex-grow relative z-10">
         {children}
       </main>

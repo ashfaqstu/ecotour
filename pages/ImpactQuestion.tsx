@@ -14,12 +14,12 @@ const ImpactSlider: React.FC<SliderProps> = ({ label, icon, value, onChange, des
   <div className="organic-card p-8 space-y-6">
     <div className="flex items-center justify-between">
       <div className="flex items-center space-x-4">
-        <div className="p-3 bg-eco-green-light text-eco-green rounded-2xl">
+        <div className="p-3 bg-eco-green-light dark:bg-eco-green/20 text-eco-green rounded-2xl">
           {icon}
         </div>
         <div>
-          <h4 className="font-display font-bold text-lg text-gray-800">{label}</h4>
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mt-1">{desc}</p>
+          <h4 className="font-display font-bold text-lg text-gray-800 dark:text-gray-100">{label}</h4>
+          <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-1">{desc}</p>
         </div>
       </div>
       <div className="text-3xl font-display font-bold text-eco-green">{value}%</div>
@@ -52,15 +52,15 @@ export const ImpactQuestion: React.FC<{ setPrefs: (p: any) => void }> = ({ setPr
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-16">
-      <button onClick={() => navigate('/')} className="flex items-center font-sans font-bold text-gray-400 hover:text-eco-green transition-colors mb-12">
+      <button onClick={() => navigate('/')} className="flex items-center font-sans font-bold text-gray-400 dark:text-gray-500 hover:text-eco-green transition-colors mb-12">
         <ChevronLeft className="w-5 h-5 mr-1" /> Back
       </button>
 
       <div className="text-center mb-16 space-y-4">
-        <h2 className="text-4xl md:text-5xl font-display font-extrabold text-gray-900 leading-tight">
+        <h2 className="text-4xl md:text-5xl font-display font-extrabold text-gray-900 dark:text-white leading-tight">
           How do you want to <br/> <span className="text-eco-green">help today?</span>
         </h2>
-        <p className="font-sans text-lg text-gray-500 max-w-2xl mx-auto">
+        <p className="font-sans text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
           Every travel priority you set helps us cultivate the perfect itinerary that balances your adventure with the planet's needs.
         </p>
       </div>

@@ -17,6 +17,8 @@
               'eco-beige': '#fdfbf7',
               'eco-brown': '#5d4037',
               'eco-cream': '#fff9f0',
+              'eco-dark': '#0f1f15',
+              'eco-dark-surface': '#1a2e22',
             },
             fontFamily: {
               sans: ['Nunito', 'sans-serif'],
@@ -36,18 +38,30 @@
             background-color: #fdfbf7;
             color: #333333;
             overflow-x: hidden;
-            transition: background-color 0.5s ease;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+        body.dark {
+            background-color: #0f1f15;
+            color: #e2e8f0;
         }
         .organic-card {
             background: #ffffff;
             border-radius: 2rem;
             box-shadow: 0 10px 30px -10px rgba(102, 185, 102, 0.1);
             border: 1px solid rgba(102, 185, 102, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .dark .organic-card {
+            background: #1a2e22;
+            border-color: rgba(102, 185, 102, 0.1);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
         }
         .organic-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 40px -15px rgba(102, 185, 102, 0.15);
+        }
+        .dark .organic-card:hover {
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
         }
         .plant-float {
             animation: float 6s ease-in-out infinite;
@@ -79,6 +93,9 @@
             background: #e8f5e9;
             border-radius: 5px;
         }
+        .dark input[type=range]::-webkit-slider-runnable-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
             height: 24px;
@@ -93,6 +110,10 @@
             border-radius: 3rem;
             background: #fdfbf7;
             position: relative;
+            transition: background-color 0.5s ease;
+        }
+        .dark .app-canvas {
+            background-color: #0f1f15;
         }
     </style>
 <script type="importmap">

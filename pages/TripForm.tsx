@@ -23,7 +23,7 @@ export const TripForm: React.FC<{ onSubmit: (d: TripDetails) => void }> = ({ onS
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-16">
-      <button onClick={() => navigate('/impact-question')} className="flex items-center font-sans font-bold text-gray-400 hover:text-eco-green transition-colors mb-12">
+      <button onClick={() => navigate('/impact-question')} className="flex items-center font-sans font-bold text-gray-400 dark:text-gray-500 hover:text-eco-green transition-colors mb-12">
         <ChevronLeft className="w-5 h-5 mr-1" /> Impact Choices
       </button>
 
@@ -33,15 +33,15 @@ export const TripForm: React.FC<{ onSubmit: (d: TripDetails) => void }> = ({ onS
             <Compass className="w-8 h-8" />
           </div>
           <div>
-            <h2 className="text-3xl font-display font-bold text-gray-900">Where next?</h2>
-            <p className="font-sans text-gray-500">Tell us about your upcoming sprout journey.</p>
+            <h2 className="text-3xl font-display font-bold text-gray-900 dark:text-white">Where next?</h2>
+            <p className="font-sans text-gray-500 dark:text-gray-400">Tell us about your upcoming sprout journey.</p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="space-y-3">
-              <label className="flex items-center gap-2 text-sm font-bold text-gray-400 uppercase tracking-widest">
+              <label className="flex items-center gap-2 text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
                 <MapPin size={16} className="text-eco-green" /> Home Town
               </label>
               <input 
@@ -50,11 +50,11 @@ export const TripForm: React.FC<{ onSubmit: (d: TripDetails) => void }> = ({ onS
                 placeholder="Where are you starting?" 
                 value={form.origin} 
                 onChange={e => setForm({ ...form, origin: e.target.value })}
-                className="w-full bg-eco-beige border-none rounded-soft p-5 font-sans font-semibold focus:ring-2 focus:ring-eco-green transition-all" 
+                className="w-full bg-eco-beige dark:bg-eco-dark/50 dark:text-white border-none rounded-soft p-5 font-sans font-semibold focus:ring-2 focus:ring-eco-green transition-all placeholder-gray-400 dark:placeholder-gray-600" 
               />
             </div>
             <div className="space-y-3">
-              <label className="flex items-center gap-2 text-sm font-bold text-gray-400 uppercase tracking-widest">
+              <label className="flex items-center gap-2 text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
                 <MapPin size={16} className="text-eco-green" /> Dream Spot
               </label>
               <input 
@@ -63,14 +63,14 @@ export const TripForm: React.FC<{ onSubmit: (d: TripDetails) => void }> = ({ onS
                 placeholder="Where should we go?" 
                 value={form.destination} 
                 onChange={e => setForm({ ...form, destination: e.target.value })}
-                className="w-full bg-eco-beige border-none rounded-soft p-5 font-sans font-semibold focus:ring-2 focus:ring-eco-green transition-all" 
+                className="w-full bg-eco-beige dark:bg-eco-dark/50 dark:text-white border-none rounded-soft p-5 font-sans font-semibold focus:ring-2 focus:ring-eco-green transition-all placeholder-gray-400 dark:placeholder-gray-600" 
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="space-y-3">
-              <label className="flex items-center gap-2 text-sm font-bold text-gray-400 uppercase tracking-widest">
+              <label className="flex items-center gap-2 text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
                 <Calendar size={16} className="text-eco-green" /> Departure
               </label>
               <input 
@@ -78,11 +78,11 @@ export const TripForm: React.FC<{ onSubmit: (d: TripDetails) => void }> = ({ onS
                 type="date" 
                 value={form.startDate} 
                 onChange={e => setForm({ ...form, startDate: e.target.value })}
-                className="w-full bg-eco-beige border-none rounded-soft p-5 font-sans font-semibold focus:ring-2 focus:ring-eco-green transition-all" 
+                className="w-full bg-eco-beige dark:bg-eco-dark/50 dark:text-white border-none rounded-soft p-5 font-sans font-semibold focus:ring-2 focus:ring-eco-green transition-all" 
               />
             </div>
             <div className="space-y-3">
-              <label className="flex items-center gap-2 text-sm font-bold text-gray-400 uppercase tracking-widest">
+              <label className="flex items-center gap-2 text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
                 <Calendar size={16} className="text-eco-green" /> Returning
               </label>
               <input 
@@ -90,14 +90,14 @@ export const TripForm: React.FC<{ onSubmit: (d: TripDetails) => void }> = ({ onS
                 type="date" 
                 value={form.endDate} 
                 onChange={e => setForm({ ...form, endDate: e.target.value })}
-                className="w-full bg-eco-beige border-none rounded-soft p-5 font-sans font-semibold focus:ring-2 focus:ring-eco-green transition-all" 
+                className="w-full bg-eco-beige dark:bg-eco-dark/50 dark:text-white border-none rounded-soft p-5 font-sans font-semibold focus:ring-2 focus:ring-eco-green transition-all" 
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="space-y-4">
-              <label className="flex items-center gap-2 text-sm font-bold text-gray-400 uppercase tracking-widest">
+              <label className="flex items-center gap-2 text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
                 <Wallet size={16} className="text-eco-green" /> Budget Style
               </label>
               <div className="flex gap-4">
@@ -106,7 +106,7 @@ export const TripForm: React.FC<{ onSubmit: (d: TripDetails) => void }> = ({ onS
                     key={tier}
                     type="button"
                     onClick={() => setForm({...form, budget: tier})}
-                    className={`flex-1 py-4 rounded-soft font-display font-bold text-sm tracking-widest uppercase transition-all ${form.budget === tier ? 'bg-eco-green text-white shadow-lg' : 'bg-eco-beige text-gray-400 hover:text-eco-green'}`}
+                    className={`flex-1 py-4 rounded-soft font-display font-bold text-sm tracking-widest uppercase transition-all ${form.budget === tier ? 'bg-eco-green text-white shadow-lg' : 'bg-eco-beige dark:bg-eco-dark/50 text-gray-400 dark:text-gray-500 hover:text-eco-green dark:hover:text-eco-green'}`}
                   >
                     {tier}
                   </button>
@@ -114,15 +114,15 @@ export const TripForm: React.FC<{ onSubmit: (d: TripDetails) => void }> = ({ onS
               </div>
             </div>
             
-            <div className="flex items-center justify-between p-6 bg-eco-beige rounded-soft">
+            <div className="flex items-center justify-between p-6 bg-eco-beige dark:bg-eco-dark/50 rounded-soft">
                <div>
-                 <span className="font-display font-bold text-gray-800 block">Party Mode</span>
-                 <span className="text-xs text-gray-400 uppercase font-bold tracking-tighter">Travel with others</span>
+                 <span className="font-display font-bold text-gray-800 dark:text-gray-100 block">Party Mode</span>
+                 <span className="text-xs text-gray-400 dark:text-gray-500 uppercase font-bold tracking-tighter">Travel with others</span>
                </div>
                <button
                 type="button"
                 onClick={() => setForm({...form, groupTravel: !form.groupTravel})}
-                className={`w-14 h-8 rounded-full transition-all relative ${form.groupTravel ? 'bg-eco-green' : 'bg-gray-300'}`}
+                className={`w-14 h-8 rounded-full transition-all relative ${form.groupTravel ? 'bg-eco-green' : 'bg-gray-300 dark:bg-gray-600'}`}
                >
                  <div className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all ${form.groupTravel ? 'right-1' : 'left-1'}`}></div>
                </button>

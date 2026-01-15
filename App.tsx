@@ -7,13 +7,15 @@ import { TripForm } from './pages/TripForm';
 import { ResultsPage } from './pages/ResultsPage';
 import { DetailsPage } from './pages/DetailsPage';
 import { GroupMatchingPage } from './pages/GroupMatchingPage';
-import { SustainabilityPrefs, TripDetails, Itinerary } from './types';
+import { LoginPage } from './pages/LoginPage';
+import { SustainabilityPrefs, TripDetails, Itinerary, User } from './types';
 
 const App: React.FC = () => {
   const [prefs, setPrefs] = useState<SustainabilityPrefs | null>(null);
   const [trip, setTrip] = useState<TripDetails | null>(null);
   const [selectedItinerary, setSelectedItinerary] = useState<Itinerary | null>(null);
   const [darkMode, setDarkMode] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     if (darkMode) {
@@ -23,12 +25,21 @@ const App: React.FC = () => {
     }
   }, [darkMode]);
 
+  const handleLogin = (u: User) => {
+    setUser(u);
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+  };
+
   return (
     <div className="app-canvas w-full min-h-[90vh] flex flex-col shadow-2xl transition-all duration-300">
       <HashRouter>
-        <Layout darkMode={darkMode} setDarkMode={setDarkMode}>
+        <Layout darkMode={darkMode} setDarkMode={setDarkMode} user={user} onLogout={handleLogout}>
           <Routes>
             <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
             <Route 
               path="/impact-question" 
               element={<ImpactQuestion setPrefs={setPrefs} />} 
