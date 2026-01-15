@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, ChevronLeft, MapPin, Calendar, Wallet, Compass } from 'lucide-react';
+import { Sparkles, ChevronLeft, MapPin, Calendar, Wallet, Compass, AlertCircle } from 'lucide-react';
 import { TripDetails } from '../types';
 
 export const TripForm: React.FC<{ onSubmit: (d: TripDetails) => void }> = ({ onSubmit }) => {
@@ -14,9 +14,72 @@ export const TripForm: React.FC<{ onSubmit: (d: TripDetails) => void }> = ({ onS
     groupTravel: false,
     travelPace: 'relaxed'
   });
+  const [dateErrors, setDateErrors] = useState<{ start?: string; end?: string }>({});
+
+  // Get today's date in YYYY-MM-DD format for min attribute
+  const today = useMemo(() => {
+    const now = new Date();
+    return now.toISOString().split('T')[0];
+  }, []);
+
+  // Validate dates
+  const validateDates = (startDate: string, endDate: string): { start?: string; end?: string } => {
+    const errors: { start?: string; end?: string } = {};
+    const todayDate = new Date();
+    todayDate.setHours(0, 0, 0, 0);
+
+    if (startDate) {
+      const start = new Date(startDate);
+      if (start < todayDate) {
+        errors.start = 'Departure date cannot be in the past';
+      }
+    }
+
+    if (endDate) {
+      const end = new Date(endDate);
+      if (end < todayDate) {
+        errors.end = 'Return date cannot be in the past';
+      }
+    }
+
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      if (end <= start) {
+        errors.end = 'Return date must be after departure date';
+      }
+    }
+
+    return errors;
+  };
+
+  const handleStartDateChange = (value: string) => {
+    const newForm = { ...form, startDate: value };
+    // If end date is before new start date, clear it
+    if (form.endDate && new Date(form.endDate) <= new Date(value)) {
+      newForm.endDate = '';
+    }
+    setForm(newForm);
+    setDateErrors(validateDates(value, newForm.endDate));
+  };
+
+  const handleEndDateChange = (value: string) => {
+    setForm({ ...form, endDate: value });
+    setDateErrors(validateDates(form.startDate, value));
+  };
+
+  const isFormValid = useMemo(() => {
+    const errors = validateDates(form.startDate, form.endDate);
+    return Object.keys(errors).length === 0 && form.startDate && form.endDate;
+  }, [form.startDate, form.endDate]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const errors = validateDates(form.startDate, form.endDate);
+    if (Object.keys(errors).length > 0) {
+      setDateErrors(errors);
+      return;
+    }
     onSubmit(form);
     navigate('/results');
   };
@@ -76,10 +139,16 @@ export const TripForm: React.FC<{ onSubmit: (d: TripDetails) => void }> = ({ onS
               <input 
                 required 
                 type="date" 
+                min={today}
                 value={form.startDate} 
-                onChange={e => setForm({ ...form, startDate: e.target.value })}
-                className="w-full bg-eco-beige dark:bg-eco-dark/50 dark:text-white border-none rounded-soft p-5 font-sans font-semibold focus:ring-2 focus:ring-eco-green transition-all" 
+                onChange={e => handleStartDateChange(e.target.value)}
+                className={`w-full bg-eco-beige dark:bg-eco-dark/50 dark:text-white border-2 rounded-soft p-5 font-sans font-semibold focus:ring-2 focus:ring-eco-green transition-all ${dateErrors.start ? 'border-red-400 dark:border-red-500' : 'border-transparent'}`} 
               />
+              {dateErrors.start && (
+                <p className="flex items-center gap-2 text-red-500 text-sm font-semibold">
+                  <AlertCircle size={14} /> {dateErrors.start}
+                </p>
+              )}
             </div>
             <div className="space-y-3">
               <label className="flex items-center gap-2 text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
@@ -88,10 +157,16 @@ export const TripForm: React.FC<{ onSubmit: (d: TripDetails) => void }> = ({ onS
               <input 
                 required 
                 type="date" 
+                min={form.startDate || today}
                 value={form.endDate} 
-                onChange={e => setForm({ ...form, endDate: e.target.value })}
-                className="w-full bg-eco-beige dark:bg-eco-dark/50 dark:text-white border-none rounded-soft p-5 font-sans font-semibold focus:ring-2 focus:ring-eco-green transition-all" 
+                onChange={e => handleEndDateChange(e.target.value)}
+                className={`w-full bg-eco-beige dark:bg-eco-dark/50 dark:text-white border-2 rounded-soft p-5 font-sans font-semibold focus:ring-2 focus:ring-eco-green transition-all ${dateErrors.end ? 'border-red-400 dark:border-red-500' : 'border-transparent'}`} 
               />
+              {dateErrors.end && (
+                <p className="flex items-center gap-2 text-red-500 text-sm font-semibold">
+                  <AlertCircle size={14} /> {dateErrors.end}
+                </p>
+              )}
             </div>
           </div>
 
@@ -129,7 +204,15 @@ export const TripForm: React.FC<{ onSubmit: (d: TripDetails) => void }> = ({ onS
             </div>
           </div>
 
-          <button type="submit" className="w-full bg-eco-green text-white py-8 rounded-soft font-display font-bold text-xl shadow-2xl shadow-eco-green/30 btn-grow flex items-center justify-center gap-4">
+          <button 
+            type="submit" 
+            disabled={!isFormValid}
+            className={`w-full py-8 rounded-soft font-display font-bold text-xl shadow-2xl flex items-center justify-center gap-4 transition-all ${
+              isFormValid 
+                ? 'bg-eco-green text-white shadow-eco-green/30 btn-grow cursor-pointer' 
+                : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+            }`}
+          >
             Create My Sprout Plan <Sparkles size={24} />
           </button>
         </form>

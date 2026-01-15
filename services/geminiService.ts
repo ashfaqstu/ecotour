@@ -1,114 +1,89 @@
-import { GoogleGenAI, Type } from "@google/genai";
 import { TripDetails, SustainabilityPrefs, Itinerary } from "../types";
 import { generateItinerariesFromBackend, checkBackendHealth } from "./apiService";
 
-const itinerarySchema = {
-  type: Type.ARRAY,
-  items: {
-    type: Type.OBJECT,
-    properties: {
-      id: { type: Type.STRING },
-      title: { type: Type.STRING },
-      totalScore: { type: Type.NUMBER },
-      breakdown: {
-        type: Type.OBJECT,
-        properties: {
-          carbon: { type: Type.NUMBER },
-          community: { type: Type.NUMBER },
-          biodiversity: { type: Type.NUMBER },
-          overtourism: { type: Type.NUMBER },
-        },
-        required: ["carbon", "community", "biodiversity", "overtourism"]
-      },
-      explanation: { type: Type.STRING },
-      transportMode: { type: Type.STRING },
-      accommodationType: { type: Type.STRING },
-      days: {
-        type: Type.ARRAY,
-        items: {
-          type: Type.OBJECT,
-          properties: {
-            day: { type: Type.NUMBER },
-            activity: { type: Type.STRING },
-            transport: { type: Type.STRING },
-            accommodation: { type: Type.STRING },
-            sustainabilityNote: { type: Type.STRING },
-          },
-          required: ["day", "activity", "transport", "accommodation", "sustainabilityNote"]
-        }
-      }
-    },
-    required: ["id", "title", "totalScore", "breakdown", "explanation", "days", "transportMode", "accommodationType"]
-  }
-};
-
 /**
- * Generate itineraries using Gemini AI directly (fallback method)
+ * Generate demo itineraries when backend is unavailable
  */
-const generateItinerariesWithGemini = async (
-  details: TripDetails,
-  prefs: SustainabilityPrefs
-): Promise<Itinerary[]> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const generateDemoItineraries = (details: TripDetails, prefs: SustainabilityPrefs): Itinerary[] => {
+  console.log("showing demo data");
   
-  const prompt = `
-    You are an impact-first eco-travel assistant. Generate 3 unique, sustainable itineraries for a trip from ${details.origin} to ${details.destination}.
-    Dates: ${details.startDate} to ${details.endDate}.
-    Budget: ${details.budget}.
-    Travel Pace: ${details.travelPace}.
-    
-    Sustainability Priorities (1-100):
-    - Carbon Emissions: ${prefs.carbon}
-    - Local Community Support: ${prefs.community}
-    - Biodiversity Protection: ${prefs.biodiversity}
-    - Overtourism Mitigation: ${prefs.overtourism}
-    
-    For each itinerary, provide a total sustainability score (0-100) and a breakdown across the four metrics.
-    Focus on low-carbon transport (trains, shared EVs), locally-owned homestays, and off-the-beaten-path activities.
-    Include daily sustainability highlights explaining the impact choices.
-  `;
-
-  const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-      responseSchema: itinerarySchema,
+  const days = Math.max(1, Math.ceil((new Date(details.endDate).getTime() - new Date(details.startDate).getTime()) / (1000 * 60 * 60 * 24)));
+  
+  const templates = [
+    {
+      id: "demo-1",
+      title: `Sustainable ${details.destination} Explorer`,
+      totalScore: 85,
+      breakdown: { carbon: 90, community: 80, biodiversity: 85, overtourism: 85 },
+      explanation: "Low-carbon journey with local community engagement and eco-friendly stays.",
+      transportMode: "train",
+      accommodationType: "Eco-Lodge",
     },
-  });
+    {
+      id: "demo-2", 
+      title: `Green ${details.destination} Adventure`,
+      totalScore: 78,
+      breakdown: { carbon: 75, community: 85, biodiversity: 80, overtourism: 72 },
+      explanation: "Balanced adventure with focus on supporting local businesses.",
+      transportMode: "bus",
+      accommodationType: "Local Homestay",
+    },
+    {
+      id: "demo-3",
+      title: `${details.destination} Cultural Immersion`,
+      totalScore: 82,
+      breakdown: { carbon: 80, community: 90, biodiversity: 75, overtourism: 83 },
+      explanation: "Deep cultural experience with minimal environmental footprint.",
+      transportMode: "train",
+      accommodationType: "Boutique Hotel",
+    },
+  ];
 
-  if (!response.text) throw new Error("No response from AI");
-  return JSON.parse(response.text);
+  return templates.map(template => ({
+    ...template,
+    days: Array.from({ length: days }, (_, i) => ({
+      day: i + 1,
+      activity: `Explore local ${i % 2 === 0 ? 'markets and artisans' : 'nature and culture'} in ${details.destination}`,
+      transport: template.transportMode,
+      accommodation: template.accommodationType,
+      sustainabilityNote: `Day ${i + 1}: Low-carbon activities supporting local community`,
+    })),
+  }));
 };
 
 /**
- * Generate itineraries - tries backend first, falls back to Gemini AI
+ * Generate itineraries - tries backend with 30s timeout, falls back to demo data
  */
 export const generateItineraries = async (
   details: TripDetails,
   prefs: SustainabilityPrefs
 ): Promise<Itinerary[]> => {
-  // Try backend first
+  // Create a timeout promise
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    setTimeout(() => reject(new Error("Request timeout after 30 seconds")), 30000);
+  });
+
+  // Try backend with timeout
   try {
-    const isBackendAvailable = await checkBackendHealth();
+    const isBackendAvailable = await Promise.race([
+      checkBackendHealth(),
+      timeoutPromise,
+    ]);
     
     if (isBackendAvailable) {
       console.log("Using backend API for itinerary generation...");
-      const itineraries = await generateItinerariesFromBackend(details, prefs);
+      const itineraries = await Promise.race([
+        generateItinerariesFromBackend(details, prefs),
+        timeoutPromise,
+      ]);
       if (itineraries && itineraries.length > 0) {
         return itineraries;
       }
     }
-  } catch (backendError) {
-    console.warn("Backend API unavailable, falling back to Gemini:", backendError);
+  } catch (error) {
+    console.warn("Backend API failed or timed out:", error);
   }
 
-  // Fall back to Gemini AI
-  try {
-    console.log("Using Gemini AI for itinerary generation...");
-    return await generateItinerariesWithGemini(details, prefs);
-  } catch (geminiError) {
-    console.error("Error generating itineraries with Gemini:", geminiError);
-    throw geminiError;
-  }
+  // Fall back to demo data
+  return generateDemoItineraries(details, prefs);
 };
