@@ -1,14 +1,11 @@
 import React from 'react';
-import { Leaf, Heart, Mail, Moon, Sun, Flower2, Bird, Home, Map, LogOut, User as UserIcon } from 'lucide-react';
+import { Leaf, Heart, Mail, Moon, Sun, Flower2, Bird, Home, Map } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { User } from '../types';
 
 interface LayoutProps {
   children: React.ReactNode;
   darkMode: boolean;
   setDarkMode: (val: boolean) => void;
-  user: User | null;
-  onLogout: () => void;
 }
 
 const FloatingDecor: React.FC = () => (
@@ -28,9 +25,7 @@ const FloatingDecor: React.FC = () => (
 const Navbar: React.FC<{ 
   darkMode: boolean; 
   setDarkMode: (val: boolean) => void;
-  user: User | null;
-  onLogout: () => void;
-}> = ({ darkMode, setDarkMode, user, onLogout }) => {
+}> = ({ darkMode, setDarkMode }) => {
   return (
     <nav className="h-20 mx-6 mt-4 px-8 flex items-center justify-between rounded-organic bg-white/70 dark:bg-eco-dark-surface/80 backdrop-blur-md border border-white/20 dark:border-white/5 shadow-sm relative z-50 transition-colors">
       <Link to="/" className="flex items-center space-x-2">
@@ -54,30 +49,6 @@ const Navbar: React.FC<{
         >
           {darkMode ? <Sun size={20} /> : <Moon size={20} />}
         </button>
-        
-        {user ? (
-          <div className="flex items-center gap-4 pl-4 border-l border-gray-200 dark:border-white/10">
-             <div className="flex items-center gap-2">
-               <div className="w-8 h-8 rounded-full bg-eco-beige dark:bg-eco-dark overflow-hidden border border-eco-green/50 p-0.5">
-                  <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full object-cover" />
-               </div>
-               <span className="font-display font-bold text-sm text-gray-700 dark:text-gray-200 hidden lg:block truncate max-w-[100px]">
-                 {user.name}
-               </span>
-             </div>
-             <button 
-               onClick={onLogout}
-               className="p-2 text-gray-400 hover:text-eco-brown dark:hover:text-red-400 transition-colors"
-               aria-label="Log Out"
-             >
-               <LogOut size={18} />
-             </button>
-          </div>
-        ) : (
-          <Link to="/login" className="bg-eco-green text-white px-6 py-2 rounded-full font-bold text-sm shadow-lg shadow-eco-green/20 btn-grow flex items-center gap-2">
-            <UserIcon size={16} /> Log In
-          </Link>
-        )}
       </div>
     </nav>
   );
@@ -107,11 +78,11 @@ const Footer: React.FC = () => {
   );
 };
 
-export const Layout: React.FC<LayoutProps> = ({ children, darkMode, setDarkMode, user, onLogout }) => {
+export const Layout: React.FC<LayoutProps> = ({ children, darkMode, setDarkMode }) => {
   return (
     <div className={`app-canvas min-h-screen flex flex-col relative transition-colors ${darkMode ? 'dark' : ''}`}>
       <FloatingDecor />
-      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} user={user} onLogout={onLogout} />
+      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
       <main className="flex-grow relative z-10">
         {children}
       </main>

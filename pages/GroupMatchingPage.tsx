@@ -14,16 +14,14 @@ const MOCK_MATCHES: MatchedTraveler[] = [
 interface GroupMatchingPageProps {
   trip?: TripDetails | null;
   prefs?: SustainabilityPrefs | null;
-  userId?: string;
-  userName?: string;
 }
 
 export const GroupMatchingPage: React.FC<GroupMatchingPageProps> = ({ 
   trip, 
-  prefs,
-  userId = 'guest-user',
-  userName = 'Guest Traveler'
+  prefs
 }) => {
+  const userId = 'eco-traveler';
+  const userName = 'Eco Traveler';
   const navigate = useNavigate();
   const [matches, setMatches] = useState<MatchedTraveler[]>([]);
   const [loading, setLoading] = useState(true);
