@@ -5,7 +5,10 @@
 import { TripDetails, SustainabilityPrefs, Itinerary, MatchedTraveler } from '../types';
 
 // Backend API base URL - configurable via environment variable
-const API_BASE_URL = process.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+// Debug log
+console.log('🔗 API_BASE_URL:', API_BASE_URL);
 
 /**
  * Transport mode mapping from frontend to backend enum
@@ -254,12 +257,16 @@ export const getSustainabilityTips = async (destination?: string): Promise<strin
  * Health check for the backend
  */
 export const checkBackendHealth = async (): Promise<boolean> => {
+  const url = `${API_BASE_URL}/api/health`;
+  console.log('🏥 Checking backend health at:', url);
   try {
-    const response = await fetch(`${API_BASE_URL}/api/health`, {
+    const response = await fetch(url, {
       method: 'GET',
     });
+    console.log('🏥 Health response:', response.status, response.ok);
     return response.ok;
-  } catch {
+  } catch (error) {
+    console.error('🏥 Health check failed:', error);
     return false;
   }
 };

@@ -8,12 +8,29 @@ import { ResultsPage } from './pages/ResultsPage';
 import { DetailsPage } from './pages/DetailsPage';
 import { GroupMatchingPage } from './pages/GroupMatchingPage';
 import { SustainabilityPrefs, TripDetails, Itinerary } from './types';
+import { checkBackendHealth } from './services/apiService';
 
 const App: React.FC = () => {
   const [prefs, setPrefs] = useState<SustainabilityPrefs | null>(null);
   const [trip, setTrip] = useState<TripDetails | null>(null);
   const [selectedItinerary, setSelectedItinerary] = useState<Itinerary | null>(null);
   const [darkMode, setDarkMode] = useState(false);
+  const [backendStatus, setBackendStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking');
+
+  // Check backend connection on app load
+  useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        const isHealthy = await checkBackendHealth();
+        setBackendStatus(isHealthy ? 'connected' : 'disconnected');
+        console.log(`🌿 Backend status: ${isHealthy ? '✅ Connected' : '❌ Disconnected'}`);
+      } catch (error) {
+        setBackendStatus('disconnected');
+        console.log('🌿 Backend status: ❌ Disconnected', error);
+      }
+    };
+    checkConnection();
+  }, []);
 
   useEffect(() => {
     if (darkMode) {
