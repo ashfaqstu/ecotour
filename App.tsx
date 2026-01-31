@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Layout } from './components/Layout';
+import { BackendConnectionOverlay } from './components/BackendConnectionOverlay';
 import { LandingPage } from './pages/LandingPage';
 import { ImpactQuestion } from './pages/ImpactQuestion';
 import { TripForm } from './pages/TripForm';
@@ -8,29 +9,14 @@ import { ResultsPage } from './pages/ResultsPage';
 import { DetailsPage } from './pages/DetailsPage';
 import { GroupMatchingPage } from './pages/GroupMatchingPage';
 import { SustainabilityPrefs, TripDetails, Itinerary } from './types';
-import { checkBackendHealth } from './services/apiService';
 
 const App: React.FC = () => {
   const [prefs, setPrefs] = useState<SustainabilityPrefs | null>(null);
   const [trip, setTrip] = useState<TripDetails | null>(null);
   const [selectedItinerary, setSelectedItinerary] = useState<Itinerary | null>(null);
   const [darkMode, setDarkMode] = useState(false);
-  const [backendStatus, setBackendStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking');
-
-  // Check backend connection on app load
-  useEffect(() => {
-    const checkConnection = async () => {
-      try {
-        const isHealthy = await checkBackendHealth();
-        setBackendStatus(isHealthy ? 'connected' : 'disconnected');
-        console.log(`🌿 Backend status: ${isHealthy ? '✅ Connected' : '❌ Disconnected'}`);
-      } catch (error) {
-        setBackendStatus('disconnected');
-        console.log('🌿 Backend status: ❌ Disconnected', error);
-      }
-    };
-    checkConnection();
-  }, []);
+  const [showConnectionOverlay, setShowConnectionOverlay] = useState(true);
+  const [isDemo, setIsDemo] = useState(false);
 
   useEffect(() => {
     if (darkMode) {
@@ -40,8 +26,24 @@ const App: React.FC = () => {
     }
   }, [darkMode]);
 
+  const handleConnected = () => {
+    setShowConnectionOverlay(false);
+    setIsDemo(false);
+  };
+
+  const handleFallback = () => {
+    setShowConnectionOverlay(false);
+    setIsDemo(true);
+  };
+
   return (
     <div className="app-canvas w-full min-h-[90vh] flex flex-col shadow-2xl transition-all duration-300">
+      {showConnectionOverlay && (
+        <BackendConnectionOverlay
+          onConnected={handleConnected}
+          onFallback={handleFallback}
+        />
+      )}
       <HashRouter>
         <Layout darkMode={darkMode} setDarkMode={setDarkMode}>
           <Routes>
